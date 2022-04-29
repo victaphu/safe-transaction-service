@@ -264,6 +264,10 @@ MASTER_COPIES: Dict[EthereumNetwork, List[Tuple[str, int, str]]] = {
         ("0x3E5c63644E683549055b9Be8653de26E0B4CD36E", 748810, "1.3.0+L2"),
         ("0xd9Db270c1B5E3Bd161E8c8503c55cEABeE709552", 748815, "1.3.0"),
     ],
+    '1666700000': [
+        ("0xA216203bc835e0372ffa1c74C587eCdfBF4Bf45f", 24106036, "1.3.0+L2"), # v1.3.0
+        ("0x82f51ED25b8A104684A53B9c9877c9E4DB599819", 24106036, "1.3.0"),
+    ]
 }
 
 PROXY_FACTORIES: Dict[EthereumNetwork, List[Tuple[str, int]]] = {
@@ -370,6 +374,9 @@ PROXY_FACTORIES: Dict[EthereumNetwork, List[Tuple[str, int]]] = {
     EthereumNetwork.REI_TESTNET: [
         ("0xa6B71E26C5e0845f74c812102Ca7114b6a896AB2", 748768),  # v1.3.0
     ],
+    '1666700000': [
+        ("0x5c460bA5691c2fB91B933cc779a6E6bfC6a8FCe0", 24106009), # v1.3.0
+    ]
 }
 
 
@@ -396,26 +403,27 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS("Setting up Safe Contract Addresses"))
         ethereum_client = EthereumClientProvider()
-        ethereum_network = ethereum_client.get_network()
-        if ethereum_network in MASTER_COPIES:
-            self.stdout.write(
-                self.style.SUCCESS(f"Setting up {ethereum_network.name} safe addresses")
+        ethereum_network = ethereum_client.w3.net.version
+        print (ethereum_network)
+        # if ethereum_network in MASTER_COPIES:
+        self.stdout.write(
+            self.style.SUCCESS(f"Setting up {ethereum_network} safe addresses")
+        )
+        self._setup_safe_master_copies(MASTER_COPIES[ethereum_network])
+        # if ethereum_network in PROXY_FACTORIES:
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Setting up {ethereum_network} proxy factory addresses"
             )
-            self._setup_safe_master_copies(MASTER_COPIES[ethereum_network])
-        if ethereum_network in PROXY_FACTORIES:
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f"Setting up {ethereum_network.name} proxy factory addresses"
-                )
-            )
-            self._setup_safe_proxy_factories(PROXY_FACTORIES[ethereum_network])
+        )
+        self._setup_safe_proxy_factories(PROXY_FACTORIES[ethereum_network])
 
-        if not (
-            ethereum_network in MASTER_COPIES and ethereum_network in PROXY_FACTORIES
-        ):
-            self.stdout.write(
-                self.style.WARNING("Cannot detect a valid ethereum-network")
-            )
+        # if not (
+        #     ethereum_network in MASTER_COPIES and ethereum_network in PROXY_FACTORIES
+        # ):
+        #     self.stdout.write(
+        #         self.style.WARNING("Cannot detect a valid ethereum-network")
+        #     )
 
     def _setup_safe_master_copies(
         self, safe_master_copies: Sequence[Tuple[str, int, str]]

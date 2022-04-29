@@ -81,7 +81,7 @@ class SafeMultisigConfirmationSerializer(serializers.Serializer):
         ethereum_client = EthereumClientProvider()
         safe = Safe(safe_address, ethereum_client)
         try:
-            safe_owners = safe.retrieve_owners(block_identifier="pending")
+            safe_owners = safe.retrieve_owners(block_identifier="latest")
         except BadFunctionCallOutput:  # Error using pending block identifier
             safe_owners = safe.retrieve_owners(block_identifier="latest")
 
@@ -196,7 +196,7 @@ class SafeMultisigTransactionSerializer(SafeMultisigTxSerializerV1):
 
         # Check owners and pending owners
         try:
-            safe_owners = safe.retrieve_owners(block_identifier="pending")
+            safe_owners = safe.retrieve_owners(block_identifier="latest")
         except BadFunctionCallOutput:  # Error using pending block identifier
             safe_owners = safe.retrieve_owners(block_identifier="latest")
         except IOError:
@@ -259,6 +259,11 @@ class SafeMultisigTransactionSerializer(SafeMultisigTxSerializerV1):
         safe_tx_hash = self.validated_data["contract_transaction_hash"]
         origin = self.validated_data["origin"]
         trusted = self.validated_data["trusted"]
+        print("Hey we are about to save some stuff")
+        print(origin)
+        print(safe_tx_hash)
+        print(trusted)
+        
         if not trusted:
             # Check user permission
             if (
@@ -390,7 +395,7 @@ class DelegateSerializer(DelegateSignatureCheckerMixin, serializers.Serializer):
     ) -> List[ChecksumAddress]:
         safe = Safe(safe_address, ethereum_client)
         try:
-            return safe.retrieve_owners(block_identifier="pending")
+            return safe.retrieve_owners(block_identifier="latest")
         except BadFunctionCallOutput:  # Error using pending block identifier
             return safe.retrieve_owners(block_identifier="latest")
 
@@ -887,7 +892,7 @@ class SafeDelegateDeleteSerializer(serializers.Serializer):
     ) -> List[ChecksumAddress]:
         safe = Safe(safe_address, ethereum_client)
         try:
-            return safe.retrieve_owners(block_identifier="pending")
+            return safe.retrieve_owners(block_identifier="latest")
         except BadFunctionCallOutput:  # Error using pending block identifier
             return safe.retrieve_owners(block_identifier="latest")
 

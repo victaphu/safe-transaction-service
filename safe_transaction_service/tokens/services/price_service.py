@@ -190,39 +190,43 @@ class PriceService:
 
         :return: USD price for Ether
         """
-        if self.ethereum_network == EthereumNetwork.XDAI:
-            try:
-                return self.kraken_client.get_dai_usd_price()
-            except CannotGetPrice:
-                return 1  # DAI/USD should be close to 1
-        elif self.ethereum_network in (
-            EthereumNetwork.ENERGY_WEB_CHAIN,
-            EthereumNetwork.VOLTA,
-        ):
-            return self.get_ewt_usd_price()
-        elif self.ethereum_network in (EthereumNetwork.MATIC, EthereumNetwork.MUMBAI):
-            return self.get_matic_usd_price()
-        elif self.ethereum_network == EthereumNetwork.BINANCE:
-            return self.get_binance_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.GATHER_DEVNET,
-            EthereumNetwork.GATHER_TESTNET,
-            EthereumNetwork.GATHER_MAINNET,
-        ):
-            return self.coingecko_client.get_gather_usd_price()
-        elif self.ethereum_network == EthereumNetwork.AVALANCHE:
-            return self.get_avalanche_usd_price()
-        elif self.ethereum_network in (
-            EthereumNetwork.AURORA,
-            EthereumNetwork.AURORA_BETANET,
-            EthereumNetwork.ARBITRUM_TESTNET,
-        ):
-            return self.get_aurora_usd_price()
-        else:
-            try:
-                return self.kraken_client.get_eth_usd_price()
-            except CannotGetPrice:
-                return self.binance_client.get_eth_usd_price()
+        print(self.ethereum_network)
+        print("Testing, hope above is not unknown ...")
+        # if self.ethereum_network == EthereumNetwork.XDAI:
+        #     try:
+        #         return self.kraken_client.get_dai_usd_price()
+        #     except CannotGetPrice:
+        #         return 1  # DAI/USD should be close to 1
+        # elif self.ethereum_network in (
+        #     EthereumNetwork.ENERGY_WEB_CHAIN,
+        #     EthereumNetwork.VOLTA,
+        # ):
+        #     return self.get_ewt_usd_price()
+        # elif self.ethereum_network in (EthereumNetwork.MATIC, EthereumNetwork.MUMBAI):
+        #     return self.get_matic_usd_price()
+        # elif self.ethereum_network == EthereumNetwork.BINANCE:
+        #     return self.get_binance_usd_price()
+        # elif self.ethereum_network in (
+        #     EthereumNetwork.GATHER_DEVNET,
+        #     EthereumNetwork.GATHER_TESTNET,
+        #     EthereumNetwork.GATHER_MAINNET,
+        # ):
+        #     return self.coingecko_client.get_gather_usd_price()
+        # elif self.ethereum_network == EthereumNetwork.AVALANCHE:
+        #     return self.get_avalanche_usd_price()
+        # elif self.ethereum_network in (
+        #     EthereumNetwork.AURORA,
+        #     EthereumNetwork.AURORA_BETANET,
+        #     EthereumNetwork.ARBITRUM_TESTNET,
+        # ):
+        #     return self.get_aurora_usd_price()
+        # elif self.ethereum_network == 1666700000:
+        return self.binance_client.get_one_usd_price()
+        # else:
+        #     try:
+        #         return self.kraken_client.get_eth_usd_price()
+        #     except CannotGetPrice:
+        #         return self.binance_client.get_eth_usd_price()
 
     @cachedmethod(cache=operator.attrgetter("cache_token_eth_value"))
     @cache_memoize(60 * 30, prefix="balances-get_token_eth_value")  # 30 minutes
